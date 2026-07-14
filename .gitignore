@@ -1,0 +1,26 @@
+# Dependencies
+node_modules/
+frontend/node_modules/
+
+# Local env files
+.env
+.env.local
+.env.*.local
+
+# Database files (will be auto-initialized on the server)
+database/tenants/
+database/tenants.json
+database/superadmin.json
+database/settings.json
+database/products.json
+
+# User Uploads
+uploads/
+
+# Build outputs
+frontend/dist/
+dist/
+
+# OS files
+.DS_Store
+Thumbs.db
