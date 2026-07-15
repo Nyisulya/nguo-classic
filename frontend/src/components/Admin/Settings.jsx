@@ -5,6 +5,8 @@ export default function Settings({ token, settings, refreshSettings }) {
   const [storeName, setStoreName] = useState(settings?.storeName || 'VaziVibe Boutique');
   const [whatsappNumber, setWhatsappNumber] = useState(settings?.whatsappNumber || '255712345678');
   const [currency, setCurrency] = useState(settings?.currency || 'Tsh');
+  const [locationName, setLocationName] = useState(settings?.locationName || '');
+  const [googleMapsLink, setGoogleMapsLink] = useState(settings?.googleMapsLink || '');
   
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
@@ -29,7 +31,9 @@ export default function Settings({ token, settings, refreshSettings }) {
       const payload = {
         storeName,
         whatsappNumber,
-        currency
+        currency,
+        locationName,
+        googleMapsLink
       };
 
       if (newPassword) {
@@ -123,6 +127,32 @@ export default function Settings({ token, settings, refreshSettings }) {
                   placeholder="Tsh"
                   value={currency}
                   onChange={(e) => setCurrency(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+            </div>
+
+            <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+              <div className="form-group">
+                <label className="form-label">Eneo la Duka (Location Text)</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  placeholder="Mfano: Kariakoo, Congo St, Dar es Salaam"
+                  value={locationName}
+                  onChange={(e) => setLocationName(e.target.value)}
+                  disabled={loading}
+                />
+              </div>
+
+              <div className="form-group">
+                <label className="form-label">Kiungo cha Google Maps (Link ya Ramani)</label>
+                <input 
+                  type="text" 
+                  className="form-input"
+                  placeholder="Kiungo cha Google Maps (https://maps.app.goo.gl/...)"
+                  value={googleMapsLink}
+                  onChange={(e) => setGoogleMapsLink(e.target.value)}
                   disabled={loading}
                 />
               </div>

@@ -1,16 +1,36 @@
-import React from 'react';
-import { ShoppingBag, Lock, LogOut, Store } from 'lucide-react';
+import { ShoppingBag, Lock, LogOut, Store, Sun, Moon } from 'lucide-react';
 
-export default function Navbar({ activeTab, setActiveTab, settings, isAdmin, onLogout }) {
+export default function Navbar({ activeTab, setActiveTab, settings, isAdmin, onLogout, isLightMode, onToggleTheme }) {
   return (
     <nav className="navbar-wrapper scrolled">
       <div className="container navbar-container">
         <a href="#" className="logo" onClick={(e) => { e.preventDefault(); setActiveTab('shop'); }}>
           <Store size={26} className="whatsapp-green" />
-          <span>{settings?.storeName || 'VaziVibe'}</span> Boutique
+          <span>{settings?.storeName || 'VaziVibe'}</span>
         </a>
         
-        <ul className="nav-links">
+        <ul className="nav-links" style={{ alignItems: 'center' }}>
+          <li>
+            <button
+              onClick={onToggleTheme}
+              style={{
+                background: 'transparent',
+                border: 'none',
+                cursor: 'pointer',
+                color: 'var(--text-muted)',
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: 'center',
+                padding: '8px',
+                borderRadius: '50%',
+                transition: 'all 0.2s',
+              }}
+              className="theme-toggle-btn"
+              title={isLightMode ? "Nenda Mode ya Giza" : "Nenda Mode ya Mwangaza"}
+            >
+              {isLightMode ? <Moon size={18} /> : <Sun size={18} />}
+            </button>
+          </li>
           <li>
             <a 
               href="#shop" 

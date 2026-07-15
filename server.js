@@ -29,7 +29,8 @@ function getTenantDbPaths(subdomain) {
   return {
     dir: tenantDir,
     settingsFile: path.join(tenantDir, 'settings.json'),
-    productsFile: path.join(tenantDir, 'products.json')
+    productsFile: path.join(tenantDir, 'products.json'),
+    salesFile: path.join(tenantDir, 'sales.json')
   };
 }
 
@@ -167,6 +168,12 @@ const resolveTenant = async (req, res, next) => {
     req.isMainDomain = false;
     req.subdomain = subdomain;
     req.tenant = tenant;
+
+    // Auto-create sales.json if missing
+    const paths = getTenantDbPaths(subdomain);
+    if (!existsSync(paths.salesFile)) {
+      await fs.writeFile(paths.salesFile, JSON.stringify([], null, 2));
+    }
     
     // Subscription Check
     const isExpired = new Date() > new Date(tenant.expiresAt);
@@ -363,6 +370,7 @@ app.post('/api/superadmin/tenants', authenticateSuperadminToken, async (req, res
     
     await fs.writeFile(paths.settingsFile, JSON.stringify(defaultSettings, null, 2));
     await fs.writeFile(paths.productsFile, JSON.stringify([], null, 2));
+    await fs.writeFile(paths.salesFile, JSON.stringify([], null, 2));
     
     const newTenant = {
       subdomain,
@@ -511,7 +519,7 @@ app.get('/api/settings', async (req, res) => {
 // Update Settings (Admin Only)
 app.put('/api/settings', authenticateToken, async (req, res) => {
   try {
-    const { storeName, whatsappNumber, currency, newPassword } = req.body;
+    const { storeName, whatsappNumber, currency, locationName, googleMapsLink, theme, newPassword } = req.body;
     const paths = getTenantDbPaths(req.subdomain);
     const settingsData = await fs.readFile(paths.settingsFile, 'utf8');
     const settings = JSON.parse(settingsData);
@@ -519,6 +527,9 @@ app.put('/api/settings', authenticateToken, async (req, res) => {
     if (storeName) settings.storeName = storeName;
     if (whatsappNumber) settings.whatsappNumber = whatsappNumber;
     if (currency) settings.currency = currency;
+    if (locationName !== undefined) settings.locationName = locationName;
+    if (googleMapsLink !== undefined) settings.googleMapsLink = googleMapsLink;
+    if (theme) settings.theme = theme;
     
     let passwordHash = null;
     if (newPassword && newPassword.trim() !== "") {
@@ -594,7 +605,7 @@ app.get('/api/products/:id', async (req, res) => {
 // Add Product (Admin Only)
 app.post('/api/products', authenticateToken, upload.single('image'), async (req, res) => {
   try {
-    const { title, description, price, category, sizes } = req.body;
+    const { title, description, price, buyingPrice, stock, category, sizes } = req.body;
     
     if (!title || !price || !category) {
       if (req.file) await fs.unlink(req.file.path);
@@ -623,6 +634,8 @@ app.post('/api/products', authenticateToken, upload.single('image'), async (req,
       title,
       description: description || '',
       price: parseFloat(price),
+      buyingPrice: parseFloat(buyingPrice || 0),
+      stock: parseInt(stock || 0, 10),
       category,
       sizes: parsedSizes,
       imageUrl: `/uploads/${req.file.filename}`,
@@ -644,7 +657,7 @@ app.post('/api/products', authenticateToken, upload.single('image'), async (req,
 // Update Product (Admin Only)
 app.put('/api/products/:id', authenticateToken, upload.single('image'), async (req, res) => {
   try {
-    const { title, description, price, category, sizes } = req.body;
+    const { title, description, price, buyingPrice, stock, category, sizes } = req.body;
     const { id } = req.params;
 
     const paths = getTenantDbPaths(req.subdomain);
@@ -685,6 +698,8 @@ app.put('/api/products/:id', authenticateToken, upload.single('image'), async (r
       title: title || oldProduct.title,
       description: description !== undefined ? description : oldProduct.description,
       price: price ? parseFloat(price) : oldProduct.price,
+      buyingPrice: buyingPrice !== undefined ? parseFloat(buyingPrice) : (oldProduct.buyingPrice || 0),
+      stock: stock !== undefined ? parseInt(stock, 10) : (oldProduct.stock || 0),
       category: category || oldProduct.category,
       sizes: parsedSizes,
       imageUrl,
@@ -700,6 +715,35 @@ app.put('/api/products/:id', authenticateToken, upload.single('image'), async (r
       try { await fs.unlink(req.file.path); } catch (e) {}
     }
     res.status(500).json({ message: "Server error while updating product." });
+  }
+});
+
+// Quick Update Stock (Admin Only)
+app.put('/api/products/:id/stock', authenticateToken, async (req, res) => {
+  try {
+    const { stock } = req.body;
+    if (stock === undefined) {
+      return res.status(400).json({ message: "Idadi ya stoki inahitajika." });
+    }
+    
+    const { id } = req.params;
+    const paths = getTenantDbPaths(req.subdomain);
+    const productsData = await fs.readFile(paths.productsFile, 'utf8');
+    const products = JSON.parse(productsData);
+    const index = products.findIndex(p => p.id === id);
+
+    if (index === -1) {
+      return res.status(404).json({ message: "Bidhaa haikupatikana." });
+    }
+
+    products[index].stock = parseInt(stock, 10);
+    products[index].updatedAt = new Date().toISOString();
+    await fs.writeFile(paths.productsFile, JSON.stringify(products, null, 2));
+
+    res.json({ message: "Stoki imesasishwa kiurahisi", product: products[index] });
+  } catch (error) {
+    console.error("Error updating stock:", error);
+    res.status(500).json({ message: "Imefeli kusasisha stoki." });
   }
 });
 
@@ -729,6 +773,134 @@ app.delete('/api/products/:id', authenticateToken, async (req, res) => {
     res.json({ message: "Product deleted successfully" });
   } catch (error) {
     res.status(500).json({ message: "Server error while deleting product." });
+  }
+});
+
+// --- SALES API ENDPOINTS ---
+
+// Get All Sales (Admin Only)
+app.get('/api/sales', authenticateToken, async (req, res) => {
+  try {
+    const paths = getTenantDbPaths(req.subdomain);
+    const salesData = await fs.readFile(paths.salesFile, 'utf8');
+    const sales = JSON.parse(salesData);
+    res.json(sales);
+  } catch (error) {
+    console.error("Error reading sales:", error);
+    res.status(500).json({ message: "Imefeli kupakia kumbukumbu ya mauzo." });
+  }
+});
+
+// Record Sale (Admin Only)
+app.post('/api/sales', authenticateToken, async (req, res) => {
+  try {
+    const { items, discount, customerName, customerPhone, date } = req.body;
+    if (!items || !Array.isArray(items) || items.length === 0) {
+      return res.status(400).json({ message: "Tafadhali chagua bidhaa za kuuza." });
+    }
+
+    const paths = getTenantDbPaths(req.subdomain);
+    const productsData = await fs.readFile(paths.productsFile, 'utf8');
+    const products = JSON.parse(productsData);
+
+    // Validate and update stock
+    for (const item of items) {
+      const prod = products.find(p => p.id === item.productId);
+      if (!prod) {
+        return res.status(404).json({ message: `Bidhaa yenye ID ${item.productId} haikupatikana.` });
+      }
+      const currentStock = prod.stock || 0;
+      prod.stock = Math.max(0, currentStock - (item.quantity || 1));
+    }
+
+    // Save updated products stock
+    await fs.writeFile(paths.productsFile, JSON.stringify(products, null, 2));
+
+    // Calculate profit
+    let totalItemsProfit = 0;
+    const saleItems = items.map(item => {
+      const prod = products.find(p => p.id === item.productId);
+      const buyPrice = prod ? (prod.buyingPrice || 0) : 0;
+      const sellPrice = parseFloat(item.price || 0);
+      const qty = parseInt(item.quantity || 1, 10);
+      const itemProfit = (sellPrice - buyPrice) * qty;
+      totalItemsProfit += itemProfit;
+      
+      return {
+        productId: item.productId,
+        title: item.title,
+        price: sellPrice,
+        buyingPrice: buyPrice,
+        quantity: qty,
+        size: item.size || ''
+      };
+    });
+
+    const parsedDiscount = parseFloat(discount || 0);
+    const totalAmount = saleItems.reduce((acc, item) => acc + (item.price * item.quantity), 0) - parsedDiscount;
+    const netProfit = totalItemsProfit - parsedDiscount;
+
+    const salesData = await fs.readFile(paths.salesFile, 'utf8');
+    const sales = JSON.parse(salesData);
+
+    const newSale = {
+      id: Date.now().toString(),
+      items: saleItems,
+      totalAmount,
+      discount: parsedDiscount,
+      profit: netProfit,
+      customerName: customerName || '',
+      customerPhone: customerPhone || '',
+      createdAt: date ? new Date(date).toISOString() : new Date().toISOString()
+    };
+
+    sales.push(newSale);
+    await fs.writeFile(paths.salesFile, JSON.stringify(sales, null, 2));
+
+    res.status(201).json({ message: "Mauzo yamefanikiwa kurekodiwa dukani.", sale: newSale });
+  } catch (error) {
+    console.error("Error recording sale:", error);
+    res.status(500).json({ message: "Hitilafu imetokea wakati wa kurekodi mauzo." });
+  }
+});
+
+// Delete/Undo Sale (Admin Only)
+app.delete('/api/sales/:id', authenticateToken, async (req, res) => {
+  try {
+    const { id } = req.params;
+    const paths = getTenantDbPaths(req.subdomain);
+    
+    const salesData = await fs.readFile(paths.salesFile, 'utf8');
+    const sales = JSON.parse(salesData);
+    const saleIndex = sales.findIndex(s => s.id === id);
+
+    if (saleIndex === -1) {
+      return res.status(404).json({ message: "Kumbukumbu ya mauzo haikupatikana." });
+    }
+
+    const sale = sales[saleIndex];
+    
+    // Restore stock
+    const productsData = await fs.readFile(paths.productsFile, 'utf8');
+    const products = JSON.parse(productsData);
+
+    for (const item of sale.items) {
+      const prod = products.find(p => p.id === item.productId);
+      if (prod) {
+        prod.stock = (prod.stock || 0) + (item.quantity || 1);
+      }
+    }
+
+    // Save updated products and sales
+    await fs.writeFile(paths.productsFile, JSON.stringify(products, null, 2));
+    
+    sales.splice(saleIndex, 1);
+    await fs.writeFile(paths.salesFile, JSON.stringify(sales, null, 2));
+
+    res.json({ message: "Mauzo yamefutwa na bidhaa zimerudishwa store." });
+  } catch (error) {
+    console.error("Error deleting sale:", error);
+    res.status(500).json({ message: "Hitilafu imetokea wakati wa kufuta mauzo." });
   }
 });
 

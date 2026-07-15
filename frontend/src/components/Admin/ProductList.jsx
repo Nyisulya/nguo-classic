@@ -9,6 +9,8 @@ export default function ProductList({ products, loading, error, token, refreshPr
   // Form states
   const [title, setTitle] = useState('');
   const [price, setPrice] = useState('');
+  const [buyingPrice, setBuyingPrice] = useState('');
+  const [stock, setStock] = useState('');
   const [category, setCategory] = useState('Women');
   const [description, setDescription] = useState('');
   const [selectedSizes, setSelectedSizes] = useState([]);
@@ -27,6 +29,8 @@ export default function ProductList({ products, loading, error, token, refreshPr
     setEditingProduct(null);
     setTitle('');
     setPrice('');
+    setBuyingPrice('');
+    setStock('');
     setCategory('Women');
     setDescription('');
     setSelectedSizes([]);
@@ -40,6 +44,8 @@ export default function ProductList({ products, loading, error, token, refreshPr
     setEditingProduct(product);
     setTitle(product.title);
     setPrice(product.price);
+    setBuyingPrice(product.buyingPrice !== undefined ? product.buyingPrice : '');
+    setStock(product.stock !== undefined ? product.stock : '');
     setCategory(product.category);
     setDescription(product.description || '');
     setSelectedSizes(product.sizes || []);
@@ -106,6 +112,8 @@ export default function ProductList({ products, loading, error, token, refreshPr
       const formData = new FormData();
       formData.append('title', title);
       formData.append('price', price);
+      formData.append('buyingPrice', buyingPrice || 0);
+      formData.append('stock', stock || 0);
       formData.append('category', category);
       formData.append('description', description);
       formData.append('sizes', JSON.stringify(selectedSizes));
@@ -191,9 +199,11 @@ export default function ProductList({ products, loading, error, token, refreshPr
             <thead>
               <tr>
                 <th>Picha</th>
-                <th>Jina la Bidhaa</th>
+                <th>Jina la Nguo</th>
                 <th>Aina</th>
-                <th>Bei</th>
+                <th>Bei ya Kuuza</th>
+                <th>Bei ya Mtaji</th>
+                <th>Stoki Store</th>
                 <th>Saizi</th>
                 <th style={{ textAlign: 'right' }}>Vitendo</th>
               </tr>
@@ -224,6 +234,28 @@ export default function ProductList({ products, loading, error, token, refreshPr
                   </td>
                   <td style={{ fontWeight: 'bold' }}>
                     {formatPrice(product.price)} {currencySymbol}
+                  </td>
+                  <td style={{ color: 'var(--text-muted)' }}>
+                    {formatPrice(product.buyingPrice || 0)} {currencySymbol}
+                  </td>
+                  <td>
+                    {product.stock !== undefined ? (
+                      product.stock <= 0 ? (
+                        <span style={{ color: '#ff6b6b', fontWeight: 'bold', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', padding: '2px 6px', background: 'rgba(220, 53, 69, 0.1)', borderRadius: '4px' }}>
+                          Imeisha (0)
+                        </span>
+                      ) : product.stock <= 3 ? (
+                        <span style={{ color: '#ff9f43', fontWeight: '600', display: 'inline-flex', alignItems: 'center', gap: '4px', fontSize: '0.85rem', padding: '2px 6px', background: 'rgba(255, 159, 67, 0.1)', borderRadius: '4px' }}>
+                          Pungufu ({product.stock})
+                        </span>
+                      ) : (
+                        <span style={{ color: '#28a745', fontWeight: '600', fontSize: '0.85rem', padding: '2px 6px', background: 'rgba(40, 167, 69, 0.1)', borderRadius: '4px' }}>
+                          {product.stock}
+                        </span>
+                      )
+                    ) : (
+                      <span style={{ color: 'var(--text-muted)' }}>-</span>
+                    )}
                   </td>
                   <td>
                     <div style={{ display: 'flex', gap: '4px', flexWrap: 'wrap' }}>
@@ -297,13 +329,39 @@ export default function ProductList({ products, loading, error, token, refreshPr
                 
                 <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
                   <div className="form-group">
-                    <label className="form-label">Bei ({currencySymbol})</label>
+                    <label className="form-label">Bei ya Kuuza ({currencySymbol})</label>
                     <input 
                       type="number" 
                       className="form-input" 
                       placeholder="Mfano: 25000"
                       value={price}
                       onChange={(e) => setPrice(e.target.value)}
+                      disabled={formLoading}
+                    />
+                  </div>
+                  
+                  <div className="form-group">
+                    <label className="form-label">Bei ya Kununua/Mtaji ({currencySymbol})</label>
+                    <input 
+                      type="number" 
+                      className="form-input" 
+                      placeholder="Mfano: 15000"
+                      value={buyingPrice}
+                      onChange={(e) => setBuyingPrice(e.target.value)}
+                      disabled={formLoading}
+                    />
+                  </div>
+                </div>
+
+                <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
+                  <div className="form-group">
+                    <label className="form-label">Stoki Iliyopo (Stock)</label>
+                    <input 
+                      type="number" 
+                      className="form-input" 
+                      placeholder="Mfano: 10"
+                      value={stock}
+                      onChange={(e) => setStock(e.target.value)}
                       disabled={formLoading}
                     />
                   </div>

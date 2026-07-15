@@ -58,6 +58,18 @@ export default function App() {
 
   const categories = ['All', 'Men', 'Women', 'Accessories', 'Shoes'];
 
+  // Light/Dark Mode State
+  const [isLightMode, setIsLightMode] = useState(localStorage.getItem('vazivibe_light_mode') === 'true');
+
+  useEffect(() => {
+    if (isLightMode) {
+      document.body.classList.add('light-theme');
+    } else {
+      document.body.classList.remove('light-theme');
+    }
+    localStorage.setItem('vazivibe_light_mode', isLightMode);
+  }, [isLightMode]);
+
   const subdomain = getSubdomain();
   const isMainDomain = !subdomain;
 
@@ -179,6 +191,23 @@ export default function App() {
     }
   }, [token, isMainDomain]);
 
+  // Dynamically apply settings accent theme
+  useEffect(() => {
+    if (settings?.theme) {
+      const themes = {
+        gold: { accent: '#C5A880', hover: '#B4966E', glow: 'rgba(197, 168, 128, 0.15)' },
+        emerald: { accent: '#2ec4b6', hover: '#0f9f90', glow: 'rgba(46, 196, 182, 0.15)' },
+        rose: { accent: '#e63946', hover: '#d62828', glow: 'rgba(230, 57, 70, 0.15)' },
+        purple: { accent: '#9b5de5', hover: '#8338ec', glow: 'rgba(155, 93, 229, 0.15)' },
+        blue: { accent: '#00b4d8', hover: '#0077b6', glow: 'rgba(0, 180, 216, 0.15)' }
+      };
+      const activeTheme = themes[settings.theme] || themes.gold;
+      document.documentElement.style.setProperty('--accent', activeTheme.accent);
+      document.documentElement.style.setProperty('--accent-hover', activeTheme.hover);
+      document.documentElement.style.setProperty('--accent-glow', activeTheme.glow);
+    }
+  }, [settings]);
+
   const handleLoginSuccess = (newToken) => {
     setToken(newToken);
     setIsAdmin(true);
@@ -268,6 +297,8 @@ export default function App() {
         settings={settings}
         isAdmin={isAdmin}
         onLogout={handleLogout}
+        isLightMode={isLightMode}
+        onToggleTheme={() => setIsLightMode(!isLightMode)}
       />
 
       {activeTab === 'shop' ? (
@@ -372,7 +403,7 @@ export default function App() {
                 <div>
                   <h3 className="footer-logo">
                     <Store size={22} className="whatsapp-green" style={{ display: 'inline', marginRight: '8px', verticalAlign: 'middle' }} />
-                    <span>{settings?.storeName || 'VaziVibe'}</span> Boutique
+                    <span>{settings?.storeName || 'VaziVibe'}</span>
                   </h3>
                   <p className="footer-desc" style={{ marginBottom: '20px' }}>
                     Duka la kijanja la mavazi ya kisasa na ya kipekee nchini. Tunalenga kukuwezesha kung'ara kwa bei nafuu sana.
@@ -389,7 +420,21 @@ export default function App() {
                       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" style={{ color: '#e1306c' }}><rect width="20" height="20" x="2" y="2" rx="5" ry="5"/><path d="M16 11.37A4 4 0 1 1 12.63 8 4 4 0 0 1 16 11.37z"/><line x1="17.5" x2="17.51" y1="6.5" y2="6.5"/></svg> @vazivibe_boutique
                     </li>
                     <li style={{ display: 'flex', alignItems: 'center', gap: '8px', marginBottom: '12px' }}>
-                      <MapPin size={14} style={{ color: 'var(--accent)' }} /> Kariakoo, Dar es Salaam
+                      <MapPin size={14} style={{ color: 'var(--accent)' }} />
+                      {settings?.googleMapsLink ? (
+                        <a 
+                          href={settings.googleMapsLink} 
+                          target="_blank" 
+                          rel="noreferrer" 
+                          style={{ color: 'var(--text-muted)', textDecoration: 'none', transition: 'color var(--transition-fast)' }}
+                          onMouseOver={(e) => e.target.style.color = 'var(--accent)'}
+                          onMouseOut={(e) => e.target.style.color = 'var(--text-muted)'}
+                        >
+                          {settings?.locationName || 'Kariakoo, Dar es Salaam'}
+                        </a>
+                      ) : (
+                        <span>{settings?.locationName || 'Kariakoo, Dar es Salaam'}</span>
+                      )}
                     </li>
                   </ul>
                 </div>

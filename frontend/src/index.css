@@ -45,10 +45,14 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
+html, body {
+  overflow-x: hidden;
+  max-width: 100%;
+}
+
 body {
   background-color: var(--bg-main);
   color: var(--text-main);
-  overflow-x: hidden;
   line-height: 1.5;
 }
 
@@ -191,6 +195,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .form-input {
   width: 100%;
+  max-width: 100%;
   padding: 14px 16px;
   background-color: var(--bg-input);
   border: 1px solid var(--border-color);
@@ -524,7 +529,7 @@ h1, h2, h3, h4, h5, h6 {
   bottom: 0;
   background-color: rgba(0, 0, 0, 0.85);
   backdrop-filter: blur(8px);
-  z-index: 1000;
+  z-index: 99999;
   display: flex;
   align-items: center;
   justify-content: center;
@@ -670,14 +675,14 @@ h1, h2, h3, h4, h5, h6 {
 /* Admin Dashboard UI Layout */
 .admin-container {
   display: grid;
-  grid-template-columns: 1fr;
+  grid-template-columns: minmax(0, 1fr);
   gap: 40px;
-  padding-top: 100px;
+  padding-top: 20px;
 }
 
 @media (min-width: 992px) {
   .admin-container {
-    grid-template-columns: 240px 1fr;
+    grid-template-columns: 240px minmax(0, 1fr);
   }
 }
 
@@ -740,6 +745,8 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--border-color);
   border-radius: var(--radius-lg);
   padding: 32px;
+  min-width: 0;
+  max-width: 100%;
 }
 
 .admin-header {
@@ -800,6 +807,8 @@ h1, h2, h3, h4, h5, h6 {
   border: 1px solid var(--border-color);
   padding: 24px;
   border-radius: var(--radius-md);
+  min-width: 0;
+  max-width: 100%;
 }
 
 .stat-num {
@@ -949,5 +958,146 @@ h1, h2, h3, h4, h5, h6 {
 @media (max-width: 768px) {
   .hero-title {
     font-size: 2.6rem;
+  }
+}
+
+/* POS & Sales panel layout styles */
+.sales-split-grid {
+  display: grid;
+  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
+  gap: 24px;
+}
+
+@media (max-width: 992px) {
+  .sales-split-grid {
+    grid-template-columns: 1fr;
+  }
+}
+
+/* Sidebar branding and heading titles */
+.sidebar-desktop-only {
+  display: none;
+}
+
+.sidebar-group-title {
+  display: none;
+}
+
+@media (min-width: 992px) {
+  .sidebar-desktop-only {
+    display: block;
+  }
+  .sidebar-group-title {
+    display: block;
+    font-size: 0.7rem;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    color: var(--text-muted);
+    font-weight: 700;
+    margin: 20px 16px 8px;
+  }
+}
+
+/* Light Theme Variables */
+body.light-theme {
+  --bg-main: #F5F5F7;
+  --bg-card: #FFFFFF;
+  --bg-card-hover: #ECECEE;
+  --bg-input: #ECECEE;
+  --bg-nav: rgba(245, 245, 247, 0.85);
+  --text-main: #1A1A1E;
+  --text-muted: #66666A;
+  --border-color: rgba(0, 0, 0, 0.08);
+  --shadow-sm: 0 2px 8px rgba(0, 0, 0, 0.05);
+  --shadow-md: 0 8px 24px rgba(0, 0, 0, 0.08);
+  --shadow-lg: 0 16px 40px rgba(0, 0, 0, 0.1);
+  color-scheme: light;
+}
+
+/* Custom light theme specific details */
+body.light-theme .glass {
+  background: rgba(255, 255, 255, 0.6);
+}
+body.light-theme .admin-sidebar {
+  background: #FFFFFF;
+}
+
+/* Mobile responsive styles */
+@media (max-width: 768px) {
+  .logo {
+    font-size: 1.2rem;
+  }
+  .nav-links {
+    gap: 16px;
+  }
+  .nav-link {
+    font-size: 0.88rem;
+  }
+  .navbar-wrapper {
+    height: 70px;
+  }
+  .admin-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 16px;
+    text-align: center;
+  }
+  .admin-header .btn {
+    width: 100%;
+  }
+  .admin-content {
+    padding: 16px;
+  }
+  .container {
+    padding: 0 12px;
+  }
+  .stats-grid {
+    grid-template-columns: repeat(2, 1fr) !important;
+    gap: 12px;
+  }
+  .stat-card {
+    padding: 16px;
+  }
+  .stat-num {
+    font-size: 1.25rem !important;
+    word-break: break-all;
+  }
+  .form-label {
+    font-size: 0.72rem !important;
+  }
+}
+
+@media (max-width: 480px) {
+  .logo {
+    font-size: 1.05rem;
+  }
+  .nav-links {
+    gap: 10px;
+  }
+  .nav-link {
+    font-size: 0.8rem;
+  }
+  .stats-grid {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Responsive columns grids for POS forms */
+.grid-2-col-responsive {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+}
+
+.grid-12-1-col-responsive {
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: 12px;
+}
+
+@media (max-width: 576px) {
+  .grid-2-col-responsive,
+  .grid-12-1-col-responsive {
+    grid-template-columns: 1fr !important;
   }
 }
