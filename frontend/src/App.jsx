@@ -13,8 +13,22 @@ import SuperadminDashboard from './components/Superadmin/Dashboard';
 const getSubdomain = () => {
   const hostname = window.location.hostname.toLowerCase();
   
+  if (hostname === 'localhost' || hostname === '127.0.0.1') {
+    return null;
+  }
+  
   if (hostname.endsWith('.localhost')) {
     return hostname.replace('.localhost', '');
+  }
+  
+  // Explicitly check for SaaS primary base domains
+  if (hostname === 'mitoko.nyisu.com' || hostname === 'mitindo.nyisu.com') {
+    return null;
+  }
+  
+  // Check if it's a subdomain of our production environments
+  if (hostname.endsWith('.mitoko.nyisu.com')) {
+    return hostname.replace('.mitoko.nyisu.com', '');
   }
   
   if (hostname.endsWith('.mitindo.nyisu.com')) {
@@ -22,7 +36,7 @@ const getSubdomain = () => {
   }
   
   const parts = hostname.split('.');
-  if (parts.length > 2 && hostname !== 'mitindo.nyisu.com' && hostname !== 'localhost') {
+  if (parts.length > 2) {
     return parts[0];
   }
   

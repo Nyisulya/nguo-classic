@@ -133,6 +133,9 @@ async function processAndSaveImage(fileBuffer) {
   return filename;
 }
 
+// Primary Domain configuration for SaaS routing
+const PRIMARY_DOMAIN = process.env.PRIMARY_DOMAIN || 'mitoko.nyisu.com';
+
 // Helper to extract subdomain
 function getSubdomain(host) {
   if (!host) return null;
@@ -142,12 +145,23 @@ function getSubdomain(host) {
     return hostname.replace('.localhost', '');
   }
   
+  // Explicit check for primary base domains
+  if (hostname === PRIMARY_DOMAIN || hostname === 'mitindo.nyisu.com') {
+    return null;
+  }
+
+  // Check if it ends with .mitoko.nyisu.com or .mitindo.nyisu.com
+  const dotPrimary = `.${PRIMARY_DOMAIN}`;
+  if (hostname.endsWith(dotPrimary)) {
+    return hostname.replace(dotPrimary, '');
+  }
+  
   if (hostname.endsWith('.mitindo.nyisu.com')) {
     return hostname.replace('.mitindo.nyisu.com', '');
   }
   
   const parts = hostname.split('.');
-  if (parts.length > 2 && hostname !== 'mitindo.nyisu.com' && hostname !== 'localhost') {
+  if (parts.length > 2 && hostname !== 'localhost') {
     return parts[0];
   }
   
