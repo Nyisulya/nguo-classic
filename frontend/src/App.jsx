@@ -316,7 +316,8 @@ export default function App() {
       />
 
       {activeTab === 'shop' ? (
-        <div className="anim-fade" style={{ paddingTop: '80px' }}>
+        <>
+          <div className="anim-fade" style={{ paddingTop: '80px' }}>
           {/* Hero Section */}
           <section className="hero">
             <div className="container" style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '40px', alignItems: 'center' }}>
@@ -401,14 +402,7 @@ export default function App() {
             </div>
           </section>
 
-          {/* Quick View Modal */}
-          {selectedProduct && (
-            <ProductModal 
-              product={selectedProduct} 
-              onClose={() => setSelectedProduct(null)} 
-              settings={settings}
-            />
-          )}
+
 
           {/* Footer */}
           <footer className="footer">
@@ -469,6 +463,15 @@ export default function App() {
             </div>
           </footer>
         </div>
+        {/* Quick View Modal */}
+        {selectedProduct && (
+          <ProductModal 
+            product={selectedProduct} 
+            onClose={() => setSelectedProduct(null)} 
+            settings={settings}
+          />
+        )}
+        </>
       ) : (
         <div style={{ paddingTop: '80px', minHeight: 'calc(100vh - 80px)' }}>
           {isAdmin ? (
