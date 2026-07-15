@@ -3,6 +3,7 @@ const cors = require('cors');
 const multer = require('multer');
 const path = require('path');
 const fs = require('fs').promises;
+const sharp = require('sharp');
 const { existsSync } = require('fs');
 const jwt = require('jsonwebtoken');
 const bcrypt = require('bcryptjs');
@@ -100,19 +101,9 @@ async function initDirs() {
 }
 initDirs();
 
-// Configure Multer for image uploads
-const storage = multer.diskStorage({
-  destination: (req, file, cb) => {
-    cb(null, UPLOADS_DIR);
-  },
-  filename: (req, file, cb) => {
-    const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1e9);
-    cb(null, uniqueSuffix + path.extname(file.originalname));
-  }
-});
-
+// Configure Multer to store uploaded files in memory
 const upload = multer({
-  storage: storage,
+  storage: multer.memoryStorage(),
   fileFilter: (req, file, cb) => {
     const filetypes = /jpeg|jpg|png|webp|gif/;
     const mimetype = filetypes.test(file.mimetype);
@@ -124,6 +115,23 @@ const upload = multer({
   },
   limits: { fileSize: 5 * 1024 * 1024 } // 5MB limit
 });
+
+// Helper to process uploaded image: resize, convert to WebP, compress, and save
+async function processAndSaveImage(fileBuffer) {
+  const filename = `${Date.now()}-${Math.round(Math.random() * 1e9)}.webp`;
+  const filePath = path.join(UPLOADS_DIR, filename);
+  
+  // Resize to max 1000px width, convert to WebP format, quality 80% (exceptional compression & quality)
+  await sharp(fileBuffer)
+    .resize(1000, null, {
+      withoutEnlargement: true,
+      fit: 'inside'
+    })
+    .webp({ quality: 80 })
+    .toFile(filePath);
+    
+  return filename;
+}
 
 // Helper to extract subdomain
 function getSubdomain(host) {
@@ -608,13 +616,15 @@ app.post('/api/products', authenticateToken, upload.single('image'), async (req,
     const { title, description, price, buyingPrice, stock, category, sizes } = req.body;
     
     if (!title || !price || !category) {
-      if (req.file) await fs.unlink(req.file.path);
       return res.status(400).json({ message: "Title, Price, and Category are required." });
     }
 
     if (!req.file) {
       return res.status(400).json({ message: "Product image is required." });
     }
+
+    // Process and save the image buffer to disk as WebP
+    const filename = await processAndSaveImage(req.file.buffer);
 
     const paths = getTenantDbPaths(req.subdomain);
     const productsData = await fs.readFile(paths.productsFile, 'utf8');
@@ -638,7 +648,7 @@ app.post('/api/products', authenticateToken, upload.single('image'), async (req,
       stock: parseInt(stock || 0, 10),
       category,
       sizes: parsedSizes,
-      imageUrl: `/uploads/${req.file.filename}`,
+      imageUrl: `/uploads/${filename}`,
       createdAt: new Date().toISOString()
     };
 
@@ -647,9 +657,7 @@ app.post('/api/products', authenticateToken, upload.single('image'), async (req,
 
     res.status(201).json({ message: "Product added successfully", product: newProduct });
   } catch (error) {
-    if (req.file) {
-      try { await fs.unlink(req.file.path); } catch (e) {}
-    }
+    console.error("Error adding product:", error);
     res.status(500).json({ message: "Server error while adding product." });
   }
 });
@@ -666,7 +674,6 @@ app.put('/api/products/:id', authenticateToken, upload.single('image'), async (r
     const index = products.findIndex(p => p.id === id);
 
     if (index === -1) {
-      if (req.file) await fs.unlink(req.file.path);
       return res.status(404).json({ message: "Product not found" });
     }
 
@@ -683,7 +690,11 @@ app.put('/api/products/:id', authenticateToken, upload.single('image'), async (r
 
     let imageUrl = oldProduct.imageUrl;
     if (req.file) {
-      imageUrl = `/uploads/${req.file.filename}`;
+      // Process and save the new image buffer to disk as WebP
+      const filename = await processAndSaveImage(req.file.buffer);
+      imageUrl = `/uploads/${filename}`;
+      
+      // Delete old image file
       const oldFilename = path.basename(oldProduct.imageUrl);
       const oldFilePath = path.join(UPLOADS_DIR, oldFilename);
       try {
@@ -711,9 +722,7 @@ app.put('/api/products/:id', authenticateToken, upload.single('image'), async (r
 
     res.json({ message: "Product updated successfully", product: updatedProduct });
   } catch (error) {
-    if (req.file) {
-      try { await fs.unlink(req.file.path); } catch (e) {}
-    }
+    console.error("Error updating product:", error);
     res.status(500).json({ message: "Server error while updating product." });
   }
 });
