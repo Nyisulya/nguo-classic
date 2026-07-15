@@ -1,0 +1,12 @@
+[
+  {
+    "subdomain": "mitindo",
+    "storeName": "VaziVibe",
+    "ownerName": "VaziVibe Owner",
+    "whatsappNumber": "255756670798",
+    "createdAt": "2026-07-14T20:35:10.731Z",
+    "expiresAt": "2026-08-13T20:35:10.730Z",
+    "status": "active",
+    "adminPasswordHash": "$2a$10$z1KvaAUCWrvmCvubi6.yYOhVy2NQcXSHEFfrYl2xLq4jDEdD9ymlG"
+  }
+]

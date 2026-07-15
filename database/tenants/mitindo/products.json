@@ -1,0 +1,98 @@
+[
+  {
+    "id": "prod_1",
+    "title": "Jacket ya Jeans ya Wanaume (Premium Denim)",
+    "description": "Jacket ya jeans imara na ya kijanja kwa ajili ya mitoko ya kawaida. Kitambaa cha hali ya juu kisichopoteza rangi.",
+    "price": 65000,
+    "buyingPrice": 40000,
+    "stock": 5,
+    "category": "Men",
+    "sizes": [
+      "M",
+      "L",
+      "XL"
+    ],
+    "imageUrl": "/uploads/mens_jacket.webp",
+    "createdAt": "2026-07-14T10:00:00.000Z"
+  },
+  {
+    "id": "prod_2",
+    "title": "Gauni la Hariri la Wanawake (Silk Evening Dress)",
+    "description": "Gauni laini sana la hariri linalovutia kwa sherehe na mitoko ya usiku. Muundo wa kisasa unaokaa vizuri mwilini.",
+    "price": 85000,
+    "buyingPrice": 50000,
+    "stock": 10,
+    "category": "Women",
+    "sizes": [
+      "S",
+      "M",
+      "L"
+    ],
+    "imageUrl": "/uploads/womens_dress.webp",
+    "createdAt": "2026-07-14T10:05:00.000Z"
+  },
+  {
+    "id": "prod_3",
+    "title": "Raba ya Kijanja ya Ngozi (Designer Sneakers)",
+    "description": "Raba za ngozi zenye soli imara na laini kwa kutembea. Zinafaa kuvaliwa na suruali za jeans au kaptula.",
+    "price": 120000,
+    "buyingPrice": 75000,
+    "stock": 0,
+    "category": "Shoes",
+    "sizes": [
+      "40",
+      "41",
+      "42",
+      "43"
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1549298916-b41d501d3772?w=600&auto=format&fit=crop",
+    "createdAt": "2026-07-14T10:10:00.000Z"
+  },
+  {
+    "id": "prod_4",
+    "title": "Saa ya Kifahari ya Ngozi (Luxury Leather Watch)",
+    "description": "Saa ya mkono ya quartz yenye kamba ya ngozi ya ng'ombe na muundo rahisi (minimalist). Inakupa muonekano wa heshima.",
+    "price": 150000,
+    "buyingPrice": 90000,
+    "stock": 1,
+    "category": "Accessories",
+    "sizes": [
+      "Free Size"
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop",
+    "createdAt": "2026-07-14T10:15:00.000Z"
+  },
+  {
+    "id": "prod_5",
+    "title": "Koti la Baridi la Unisex (Premium Sweatshirt)",
+    "description": "Sweater nzito ya baridi kwa ajili ya jinsia zote. Nyuzi zake ni pamba safi inayotunza joto vizuri sana.",
+    "price": 55000,
+    "buyingPrice": 35000,
+    "stock": 0,
+    "category": "Men",
+    "sizes": [
+      "S",
+      "M",
+      "L",
+      "XL"
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1556821840-3a63f95609a7?w=600&auto=format&fit=crop",
+    "createdAt": "2026-07-14T10:20:00.000Z"
+  },
+  {
+    "id": "prod_6",
+    "title": "Blauzi ya Kisasa ya Wanawake (Chic Chiffon Blouse)",
+    "description": "Blauz nyepesi na ya kuvutia sana kwa ofisini au mtoko wa kawaida wa mchana.",
+    "price": 45000,
+    "buyingPrice": 25000,
+    "stock": 14,
+    "category": "Women",
+    "sizes": [
+      "Free Size",
+      "S",
+      "M"
+    ],
+    "imageUrl": "https://images.unsplash.com/photo-1548624149-f9b1859aa7d0?w=600&auto=format&fit=crop",
+    "createdAt": "2026-07-14T10:25:00.000Z"
+  }
+]

@@ -1,0 +1,197 @@
+[
+  {
+    "id": "1784013600000",
+    "items": [
+      {
+        "productId": "prod_1",
+        "title": "Jacket ya Jeans ya Wanaume (Premium Denim)",
+        "price": 65000,
+        "buyingPrice": 40000,
+        "quantity": 1,
+        "size": "L"
+      },
+      {
+        "productId": "prod_2",
+        "title": "Gauni la Hariri la Wanawake (Silk Evening Dress)",
+        "price": 85000,
+        "buyingPrice": 50000,
+        "quantity": 1,
+        "size": "M"
+      }
+    ],
+    "totalAmount": 140000,
+    "discount": 10000,
+    "profit": 50000,
+    "customerName": "Halima Juma",
+    "customerPhone": "255711223344",
+    "createdAt": "2026-07-12T15:20:00.000Z"
+  },
+  {
+    "id": "1784100000000",
+    "items": [
+      {
+        "productId": "prod_3",
+        "title": "Raba ya Kijanja ya Ngozi (Designer Sneakers)",
+        "price": 120000,
+        "buyingPrice": 75000,
+        "quantity": 1,
+        "size": "42"
+      }
+    ],
+    "totalAmount": 120000,
+    "discount": 0,
+    "profit": 45000,
+    "customerName": "John Daniel",
+    "customerPhone": "255766889900",
+    "createdAt": "2026-07-13T11:45:00.000Z"
+  },
+  {
+    "id": "1784186400000",
+    "items": [
+      {
+        "productId": "prod_6",
+        "title": "Blauzi ya Kisasa ya Wanawake (Chic Chiffon Blouse)",
+        "price": 45000,
+        "buyingPrice": 25000,
+        "quantity": 2,
+        "size": "M"
+      }
+    ],
+    "totalAmount": 80000,
+    "discount": 10000,
+    "profit": 30000,
+    "customerName": "Neema Shayo",
+    "customerPhone": "255755112233",
+    "createdAt": "2026-07-14T09:30:00.000Z"
+  },
+  {
+    "id": "1784210000000",
+    "items": [
+      {
+        "productId": "prod_1",
+        "title": "Jacket ya Jeans ya Wanaume (Premium Denim)",
+        "price": 65000,
+        "buyingPrice": 40000,
+        "quantity": 1,
+        "size": "M"
+      }
+    ],
+    "totalAmount": 65000,
+    "discount": 0,
+    "profit": 25000,
+    "customerName": "Emmanuel Karia",
+    "customerPhone": "255744883399",
+    "createdAt": "2026-07-14T17:15:00.000Z"
+  },
+  {
+    "id": "1784260000000",
+    "items": [
+      {
+        "productId": "prod_4",
+        "title": "Saa ya Kifahari ya Ngozi (Luxury Leather Watch)",
+        "price": 150000,
+        "buyingPrice": 90000,
+        "quantity": 1,
+        "size": "Free Size"
+      }
+    ],
+    "totalAmount": 145000,
+    "discount": 5000,
+    "profit": 55000,
+    "customerName": "Diana Rose",
+    "customerPhone": "255712990011",
+    "createdAt": "2026-07-15T08:10:00.000Z"
+  },
+  {
+    "id": "1784101082918",
+    "items": [
+      {
+        "productId": "prod_3",
+        "title": "Raba ya Kijanja ya Ngozi (Designer Sneakers)",
+        "price": 120000,
+        "buyingPrice": 75000,
+        "quantity": 2,
+        "size": "40"
+      }
+    ],
+    "totalAmount": 240000,
+    "discount": 0,
+    "profit": 90000,
+    "customerName": "",
+    "customerPhone": "",
+    "createdAt": "2026-07-15T00:00:00.000Z"
+  },
+  {
+    "id": "1784103021952",
+    "items": [
+      {
+        "productId": "prod_3",
+        "title": "Raba ya Kijanja ya Ngozi (Designer Sneakers)",
+        "price": 117999,
+        "buyingPrice": 75000,
+        "quantity": 1,
+        "size": "40"
+      },
+      {
+        "productId": "prod_6",
+        "title": "Blauzi ya Kisasa ya Wanawake (Chic Chiffon Blouse)",
+        "price": 45000,
+        "buyingPrice": 25000,
+        "quantity": 1,
+        "size": "Free Size"
+      }
+    ],
+    "totalAmount": 153001,
+    "discount": 9998,
+    "profit": 53001,
+    "customerName": "",
+    "customerPhone": "",
+    "createdAt": "2026-07-15T00:00:00.000Z"
+  },
+  {
+    "id": "1784103355820",
+    "items": [
+      {
+        "productId": "prod_3",
+        "title": "Raba ya Kijanja ya Ngozi (Designer Sneakers)",
+        "price": 120000,
+        "buyingPrice": 75000,
+        "quantity": 1,
+        "size": "40"
+      },
+      {
+        "productId": "prod_1",
+        "title": "Jacket ya Jeans ya Wanaume (Premium Denim)",
+        "price": 65000,
+        "buyingPrice": 40000,
+        "quantity": 3,
+        "size": "M"
+      }
+    ],
+    "totalAmount": 315000,
+    "discount": 0,
+    "profit": 120000,
+    "customerName": "",
+    "customerPhone": "",
+    "createdAt": "2026-07-15T00:00:00.000Z"
+  },
+  {
+    "id": "1784103561239",
+    "items": [
+      {
+        "productId": "prod_4",
+        "title": "Saa ya Kifahari ya Ngozi (Luxury Leather Watch)",
+        "price": 150000,
+        "buyingPrice": 90000,
+        "quantity": 1,
+        "size": "Free Size"
+      }
+    ],
+    "totalAmount": 150000,
+    "discount": 0,
+    "profit": 60000,
+    "customerName": "",
+    "customerPhone": "",
+    "createdAt": "2026-07-15T00:00:00.000Z"
+  }
+]
