@@ -36,15 +36,6 @@
 
 ---
 
-## 🔑 Taarifa za Kuingia (Default Credentials)
-
-| Lango (Portal) | Njia ya Kufikia (Route) | Nenosiri la Msingi (Default Password) | Maelezo |
-| :--- | :--- | :--- | :--- |
-| **Superadmin Portal** | `/superadmin` | `nyisu2026` | Msimamizi Mkuu anayeweza kuunda maduka na kubadili password za duka lolote |
-| **Duka Demo (Tenant)** | `/admin` (kwenye subdomain) | *Imehifadhiwa kama Bcrypt Hash* | Unaweza kubadili password hii moja kwa moja ukitumia Superadmin Dashboard |
-
----
-
 ## 🚀 Jinsi ya Kuanza (Getting Started)
 
 ### Mahitaji ya Awali (Prerequisites)
